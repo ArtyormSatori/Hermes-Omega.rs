@@ -1,0 +1,39 @@
+name: Hermes-Omega-RS CI & Release Build
+
+on:
+  push:
+    branches: [ "main", "master" ]
+    tags: [ "v*" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check-and-test:
+    name: Rust Check, Clippy & Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust Stable Toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Cache Cargo Registry & Target
+        uses: Swatinem/rust-cache@v2
+      - name: Cargo Check
+        run: cargo check --all-targets
+      - name: Run Unit & Integration Tests
+        run: cargo test -- --nocapture
+      - name: Build Optimized Release Binary
+        run: cargo build --release
+
+  docker-build:
+    name: Verify Multi-Stage Docker Build
+    needs: check-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker Image
+        run: docker build -t hermes-omega-rs:latest .

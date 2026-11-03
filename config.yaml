@@ -1,0 +1,63 @@
+profile: "default"
+hermes_home: "~/.hermes"
+
+provider:
+  active_provider: "xai"
+  active_model: "grok-4.6"
+  api_mode: "chat_completions"
+  temperature: 0.2
+  max_tokens: 8192
+  enable_prompt_caching: true
+  fallback_providers:
+    - provider: "anthropic"
+      model: "claude-3-7-sonnet-latest"
+      api_mode: "anthropic_messages"
+    - provider: "openai"
+      model: "gpt-4o"
+      api_mode: "chat_completions"
+    - provider: "ollama"
+      model: "hermes3:8b"
+      api_mode: "chat_completions"
+
+memory:
+  memory_md_max_chars: 2200
+  user_md_max_chars: 2200
+  enable_fts5_search: true
+  auto_create_skills: true
+  honcho_dual_peer_modeling: true
+  context_condenser_threshold_messages: 24
+  context_condenser_keep_head: 4
+  context_condenser_keep_tail: 8
+
+sandbox:
+  default_backend: "local"
+  docker_image: "ubuntu:24.04"
+  command_timeout_secs: 60
+  require_approval_for_high_risk: true
+  allowed_paths:
+    - "./workspace"
+    - "/tmp"
+
+gateway:
+  bind_addr: "0.0.0.0:8080"
+  heartbeat_interval_secs: 1800
+  enable_dm_pairing: true
+  authorized_users:
+    - "admin"
+    - "owner"
+
+openhuman:
+  max_concurrent_agents: 512
+  agent_memory_budget_kb: 256
+  memory_tree_sync_interval_secs: 1200
+  connected_sources:
+    - "gmail"
+    - "github"
+    - "calendar"
+    - "slack"
+    - "notion"
+
+grokbot:
+  enable_role_inference: true
+  enable_teach_a_task_recorder: true
+  enable_chief_of_staff_delegation: true

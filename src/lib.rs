@@ -1,0 +1,21 @@
+pub mod acp;
+pub mod agent;
+pub mod ascii_art;
+pub mod avatar;
+pub mod claw_gateway;
+pub mod config;
+pub mod error;
+pub mod event_stream;
+pub mod grok_engine;
+pub mod hermes_core;
+pub mod human_harness;
+pub mod i18n;
+pub mod large_transfer;
+pub mod sandbox;
+pub mod security;
+pub mod tools;
+pub mod tui;
+
+pub use agent::HermesUnifiedAgent;
+pub use config::HermesConfig;
+pub use error::{HermesError, Result};

@@ -1,0 +1,19 @@
+[Unit]
+Description=Hermes Omega.rs Unified Autonomous AI Agent Daemon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=hermes
+Group=hermes
+WorkingDirectory=/home/hermes/workspace
+Environment="HERMES_HOME=/home/hermes/.hermes"
+Environment="RUST_LOG=info,hermes_rs=debug"
+ExecStart=/usr/local/bin/hermes-omega daemon --bind 0.0.0.0:8080
+Restart=always
+RestartSec=5
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,56 @@
+[package]
+name = "hermes-omega-rs"
+version = "0.5.0"
+edition = "2021"
+authors = ["ArtyormSatori <kiethlt@gmail.com>"]
+description = "Hermes Omega.rs \u2014 Unified autonomous AI agent runtime in Rust (2021 Edition). Integrates Hermes, OpenClaw, OpenHands, OpenHuman, and Grokbot mechanisms."
+repository = "https://github.com/ArtyormSatori/Hermes-Omega.rs"
+license = "MIT"
+readme = "README.md"
+keywords = ["ai-agent", "hermes", "openclaw", "openhands", "rust"]
+categories = ["command-line-utilities", "asynchronous", "network-programming"]
+
+[[bin]]
+name = "hermes-omega"
+path = "src/main.rs"
+
+[lib]
+name = "hermes_omega_rs"
+path = "src/lib.rs"
+
+[dependencies]
+tokio = { version = "1.40", features = ["full"] }
+tokio-stream = "0.1"
+futures = "0.3"
+async-trait = "0.1"
+dashmap = "6.1"
+parking_lot = "0.12"
+tokio-util = { version = "0.7", features = ["rt", "codec"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde_yaml = "0.9"
+toml = "0.8"
+rusqlite = { version = "0.32", features = ["bundled"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream", "multipart"] }
+axum = { version = "0.7", features = ["ws", "macros", "json"] }
+tower = "0.5"
+tower-http = { version = "0.6", features = ["cors", "trace", "fs"] }
+clap = { version = "4.5", features = ["derive", "env"] }
+rustyline = "14.0"
+uuid = { version = "1.10", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+sha2 = "0.10"
+hmac = "0.12"
+hex = "0.4"
+regex = "1.11"
+thiserror = "1.0"
+anyhow = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = true
+panic = "abort"
