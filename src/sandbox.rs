@@ -1,15 +1,25 @@
+//! # Multi-Backend Execution Sandbox (`src/sandbox.rs` — v1.0.0 Hardened)
+//!
+//! Nâng cấp:
+//! 1. Lưu đệm biểu thức chính quy ANSI (`std::sync::OnceLock<Regex>`) để không biên dịch lại mỗi lần chạy lệnh.
+//! 2. Quét chống Shell Subshell Injection (`security::audit_shell_command`) + kiểm duyệt rủi ro `HumanApprovalGate`.
+//! 3. Làm sạch biến môi trường tiến trình con (`env_clear` + danh sách cho phép an toàn `PATH`, `LANG=vi_VN.UTF-8`).
+
 use crate::config::{SandboxBackendType, SandboxConfig};
 use crate::error::{HermesError, Result};
 use crate::event_stream::AgentObservation;
 use crate::human_harness::HumanApprovalGate;
+use crate::security::audit_shell_command;
 use dashmap::DashMap;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::process::Stdio;
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use std::time::Duration;
 use tokio::process::Command;
 use tokio::time::timeout;
+
+static ANSI_REGEX: OnceLock<Regex> = OnceLock::new();
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BackgroundJobInfo {
@@ -37,7 +47,7 @@ impl SandboxRuntime {
     }
 
     pub fn strip_ansi_codes(input: &str) -> String {
-        let re = Regex::new(r"\x1b\[[0-9;]*[a-zA-Z]").unwrap();
+        let re = ANSI_REGEX.get_or_init(|| Regex::new(r"\x1b\[[0-9;]*[a-zA-Z]").unwrap());
         re.replace_all(input, "").to_string()
     }
 
@@ -47,8 +57,11 @@ impl SandboxRuntime {
         cwd: Option<&str>,
         background: bool,
     ) -> Result<AgentObservation> {
+        // 1. Quét chống Shell Injection & kiểm tra rủi ro HumanApprovalGate
+        audit_shell_command(command)?;
         let _risk = self.approval_gate.verify_command_allowed(command)?;
 
+        // 2. Khởi tạo tiến trình cô lập theo Backend
         let mut cmd = match self.config.default_backend {
             SandboxBackendType::Local => {
                 let mut c = Command::new("bash");
@@ -90,7 +103,15 @@ impl SandboxRuntime {
             }
         };
 
-        cmd.stdout(Stdio::piped()).stderr(Stdio::piped());
+        // 3. Cô lập biến môi trường (chống lộ API key qua lệnh `env` hoặc `printenv`)
+        let safe_path = std::env::var("PATH").unwrap_or_else(|_| "/usr/local/bin:/usr/bin:/bin".to_string());
+        cmd.env_clear()
+            .env("PATH", safe_path)
+            .env("LANG", "vi_VN.UTF-8")
+            .env("LC_ALL", "vi_VN.UTF-8")
+            .env("TERM", "xterm-256color")
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped());
 
         if background {
             let child = cmd.spawn()?;
