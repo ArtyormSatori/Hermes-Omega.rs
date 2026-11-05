@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="rustOmega" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B2B"/>
+      <stop offset="50%" stop-color="#D94E1F"/>
+      <stop offset="100%" stop-color="#00E5FF"/>
+    </linearGradient>
+    <linearGradient id="bgDark" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#141821"/>
+      <stop offset="100%" stop-color="#0B0D12"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bgDark)" stroke="#262C3A" stroke-width="6"/>
+  <circle cx="256" cy="256" r="176" fill="none" stroke="url(#rustOmega)" stroke-width="10" stroke-dasharray="22 14" opacity="0.65"/>
+  <!-- Hermes Wings -->
+  <path d="M72 168 C118 182, 152 208, 172 246 C132 236, 98 220, 64 196 Z" fill="#FF6B2B"/>
+  <path d="M84 214 C124 226, 152 244, 168 272 C132 266, 102 252, 76 234 Z" fill="#E0531C"/>
+  <path d="M440 168 C394 182, 360 208, 340 246 C380 236, 414 220, 448 196 Z" fill="#00E5FF"/>
+  <path d="M428 214 C388 226, 360 244, 344 272 C380 266, 410 252, 436 234 Z" fill="#00B8D4"/>
+  <!-- Central Greek Omega (Ω) -->
+  <path d="M156 364 L212 364 L212 332 C178 308, 164 264, 174 220 C186 172, 220 144, 256 144 C292 144, 326 172, 338 220 C348 264, 334 308, 300 332 L300 364 L356 364" fill="none" stroke="url(#rustOmega)" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
