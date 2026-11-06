@@ -5,15 +5,10 @@
 <h1 align="center">Ω Hermes Omega.rs</h1>
 
 <p align="center">
-  <a href="https://github.com/ArtyormSatori/Hermes-Omega.rs/releases/tag/v1.0.1"><img src="https://img.shields.io/github/v/release/ArtyormSatori/Hermes-Omega.rs" alt="Release"></a>
+  <a href="https://github.com/ArtyormSatori/Hermes-Omega.rs/releases"><img src="https://img.shields.io/github/v/release/ArtyormSatori/Hermes-Omega.rs" alt="Release"></a>
   <a href="https://github.com/ArtyormSatori/Hermes-Omega.rs/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ArtyormSatori/Hermes-Omega.rs" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/rust-2021-orange" alt="Rust Edition 2021">
   <a href="https://github.com/ArtyormSatori/Hermes-Omega.rs/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/ArtyormSatori/Hermes-Omega.rs/ci.yml?branch=main" alt="CI"></a>
-</p>
-
-<p align="center">
-  <b>Unified autonomous AI agent runtime in Rust.</b><br>
-  <i>Runtime agent tự trị hợp nhất viết bằng Rust — một binary, nhiều cơ chế, hai ngôn ngữ.</i>
 </p>
 
 <p align="center">
@@ -24,44 +19,18 @@
 
 ## English
 
-### What it is
+**The self-improving AI agent, rewritten in Rust.** It learns from experience — creating skills, improving them during use, and remembering who you are across sessions. One static binary: run it on a VPS, a server, or your laptop. Use any model you want — xAI, Anthropic, OpenAI, Ollama, or your own endpoint. No lock-in.
 
-Hermes Omega.rs re-architects the **Nous Hermes** agent into a single static Rust binary, integrating the runtime mechanisms of **OpenClaw**, **OpenHands**, **OpenHuman**, and **Grokbot** — plus a realtime Vietnamese avatar (**MUSE.AI**) and a 6-layer security shield.
-
-| Capability | Module | Mechanism |
-|---|---|---|
-| 3-tier prompt & memory | `hermes_core` | Prefix-cache-aligned system prompt; SQLite WAL + FTS5 full-text search (Vietnamese, `unicode61 remove_diacritics`); closed skill loop writing `SKILL.md`; ShareGPT trajectory export |
-| Event stream & condenser | `event_stream` | Typed `Action` → `Observation` event stream (1024-slot `tokio::broadcast`); `ContextCondenser` keeps head/tail, summarizes the middle |
-| Multi-channel gateway | `claw_gateway` | Axum HTTP/WebSocket; DM pairing (constant-time verification); 30-min proactive heartbeat; >1 GB–16 GB chunked upload & `Range` download; web dashboard at `/` and `/dashboard` |
-| Fleet harness & memory tree | `human_harness` | Lock-free `DashMap` fleet — many agents running in parallel in one process; 20-min memory-tree wiki sync; 4-tier risk classifier (`Low`–`Critical`) |
-| Role inference & LLM router | `grok_engine` | Deterministic role inference from agent name; `TeachATaskRecorder` → `SKILL.md`; multi-provider fallback (xAI, Anthropic, OpenAI, Nous, Ollama) |
-| Sandbox & tools | `sandbox`, `tools` | Local / Docker (`--network none --memory 512m`) / SSH / Firecracker; shell-injection audit; env isolation; JSON-Schema tool registry |
-| IDE protocol | `acp` | Stdio JSON-RPC 2.0 server for VS Code, Zed, JetBrains |
-| Avatar & TUI | `avatar`, `ascii_art`, `tui`, `i18n` | Realtime Vietnamese viseme lip-sync avatar; multi-theme terminal UI; `Locale::Vi` |
-
-**Fleet limits** (`config.yaml` → `openhuman`): the fleet is the pool of agents running in parallel. `max_concurrent_agents: 512` caps how many agents run at once; `agent_memory_budget_kb: 256` caps the memory each agent may use; `memory_tree_sync_interval_secs: 1200` sets how often the memory-tree wiki syncs. Raise `max_concurrent_agents` only on machines with enough RAM.
-
-### Security — 6 layers
-
-`security` + `large_transfer`: prompt-injection shield (canary token, cryptographic spotlighting, Unicode stripper) · SQL/FTS5 injection guard (`rusqlite::params!`, `PRAGMA trusted_schema = OFF`, FTS5 sanitizer) · path-traversal jail · constant-time HMAC-SHA256 verification · shell-command auditor · sliding-window rate limiter.
-
-### Screenshots
-
-<p align="center">
-  <img src="assets/ascii-banner.jpg" alt="Hermes Omega.rs ASCII banner" width="100%">
-  <em>ASCII banner (monochrome, rendered by <code>ascii_art</code>)</em>
-</p>
-
-<p align="center">
-  <img src="assets/ascii-emblem.jpg" alt="Hermes Omega.rs ASCII emblem" width="49%">
-  <img src="assets/icon.jpg" alt="Hermes Omega.rs icon" width="49%">
-</p>
-<p align="center"><em>ASCII emblem (left) and app icon (right)</em></p>
+| **A real terminal interface** | Full TUI with multiline input, slash commands, and streaming tool output. |
+| **A closed learning loop** | Creates skills from experience and improves them during use. Searches its own past sessions and builds a model of you. |
+| **Lives where you are** | HTTP/WebSocket gateway with a web dashboard — talk to it from any client. |
+| **Runs anywhere** | One static binary. Docker image and systemd service included. |
+| **Speaks Vietnamese** | Realtime Vietnamese avatar, Vietnamese UI, Vietnamese full-text search. |
+| **Hardened by default** | Prompt/SQL injection guards, path jail, constant-time auth, rate limits. |
 
 ### Quick start
 
 ```bash
-cargo test -- --nocapture
 cargo build --release
 ./target/release/hermes-omega doctor
 ```
@@ -74,13 +43,13 @@ docker compose up --build -d
 curl -s http://localhost:8080/health
 ```
 
-### CLI
+### Commands
 
 ```bash
-hermes-omega tui                  # Multi-theme TUI + MUSE.AI avatar
+hermes-omega tui                  # Terminal UI + avatar
 hermes-omega chat --agent researchbot
-hermes-omega daemon --bind 0.0.0.0:8080   # Gateway + dashboard + heartbeat
-hermes-omega security-audit       # Audit all 6 security layers
+hermes-omega daemon --bind 0.0.0.0:8080   # Gateway + dashboard
+hermes-omega security-audit       # Audit the security layers
 hermes-omega fleet --benchmark-count 50
 hermes-omega teach deploy-rust-service
 hermes-omega skills
@@ -89,58 +58,47 @@ hermes-omega acp                  # ACP server for editors
 hermes-omega doctor
 ```
 
-Config: `config.yaml` — gateway, LLM providers, and the OpenHuman fleet limits (see above). State lives under `~/.hermes/` (`SOUL.md`, `MEMORY.md`, `USER.md`, SQLite DB).
+### Screenshots
+
+<p align="center">
+  <img src="assets/ascii-banner.jpg" alt="Hermes Omega.rs ASCII banner" width="100%">
+  <em>ASCII banner, rendered by the built-in ASCII engine</em>
+</p>
+
+<p align="center">
+  <img src="assets/ascii-emblem.jpg" alt="Hermes Omega.rs ASCII emblem" width="49%">
+  <img src="assets/icon.jpg" alt="Hermes Omega.rs icon" width="49%">
+</p>
+<p align="center"><em>ASCII emblem (left) and app icon (right)</em></p>
+
+### Configuration
+
+`config.yaml` holds the gateway, LLM providers, and fleet settings. The fleet is the pool of agents running in parallel: `max_concurrent_agents: 512` caps how many run at once, `agent_memory_budget_kb: 256` caps memory per agent. Raise the cap only on machines with enough RAM. State lives under `~/.hermes/`.
 
 ### Releases
 
-See [CHANGELOG.md](CHANGELOG.md). Current: **v1.0.1** (2026-11-06). Previous: v1.0.0, v0.8.0-sec, v0.5.0.
+See [CHANGELOG.md](CHANGELOG.md). Current: **v1.0.1**.
 
 ### Contributing & license
 
-Issues and PRs are welcome. Please run `cargo fmt`, `cargo clippy`, and `cargo test` before submitting. MIT license — see [LICENSE](LICENSE).
+Issues and PRs are welcome — run `cargo fmt`, `cargo clippy`, and `cargo test` first. MIT license, see [LICENSE](LICENSE).
 
 ---
 
 ## Tiếng Việt
 
-### Hermes Omega.rs là gì
+**Agent AI tự cải thiện, viết lại bằng Rust.** Nó học từ kinh nghiệm — tự tạo kỹ năng, cải thiện kỹ năng trong lúc dùng, và nhớ bạn là ai qua các phiên. Một binary duy nhất: chạy trên VPS, máy chủ, hay laptop đều được. Dùng model nào cũng được — xAI, Anthropic, OpenAI, Ollama, hay endpoint của riêng bạn. Không khóa nhà cung cấp.
 
-Hermes Omega.rs tái cấu trúc agent **Nous Hermes** thành một binary Rust duy nhất, tích hợp cơ chế runtime của **OpenClaw**, **OpenHands**, **OpenHuman** và **Grokbot** — cộng thêm avatar tiếng Việt thời gian thực (**MUSE.AI**) và hệ thống bảo vệ 6 lớp.
-
-| Năng lực | Module | Cơ chế |
-|---|---|---|
-| Prompt 3 tầng & bộ nhớ | `hermes_core` | System prompt tối ưu cho prefix-cache; SQLite WAL + FTS5 tìm kiếm toàn văn tiếng Việt (`unicode61 remove_diacritics`); vòng lặp học khép kín ghi `SKILL.md`; xuất lịch sử hội thoại dạng ShareGPT |
-| Luồng sự kiện & cô đọng | `event_stream` | Luồng sự kiện `Action` → `Observation` (1024 slot `tokio::broadcast`); `ContextCondenser` giữ đầu/cuối, tóm tắt đoạn giữa |
-| Cổng đa kênh | `claw_gateway` | HTTP/WebSocket (Axum); ghép đôi DM (xác thực bằng so sánh hằng số thời gian); heartbeat 30 phút; upload/download >1 GB–16 GB theo từng khối (chunk) và `Range`; dashboard web tại `/` và `/dashboard` |
-| Hạm đội & cây tri thức | `human_harness` | Hạm đội lock-free `DashMap` — nhiều agent chạy song song trong một tiến trình; đồng bộ wiki cây tri thức mỗi 20 phút; bộ phân loại rủi ro 4 tầng (`Low`–`Critical`) |
-| Suy luận vai trò & router LLM | `grok_engine` | Suy luận vai trò từ tên agent; `TeachATaskRecorder` → `SKILL.md`; fallback đa nhà cung cấp (xAI, Anthropic, OpenAI, Nous, Ollama) |
-| Sandbox & công cụ | `sandbox`, `tools` | Local / Docker (`--network none --memory 512m`) / SSH / Firecracker; kiểm duyệt lệnh shell; cô lập biến môi trường; registry công cụ JSON-Schema |
-| Giao thức IDE | `acp` | Máy chủ JSON-RPC 2.0 qua stdio cho VS Code, Zed, JetBrains |
-| Avatar & TUI | `avatar`, `ascii_art`, `tui`, `i18n` | Avatar khẩu hình tiếng Việt thời gian thực; TUI đa chủ đề; `Locale::Vi` |
-
-**Giới hạn hạm đội là gì?** Hạm đội (fleet) là tập hợp các agent chạy song song trong một tiến trình. Trong `config.yaml` → mục `openhuman`: `max_concurrent_agents: 512` là số agent tối đa được chạy cùng lúc; `agent_memory_budget_kb: 256` là bộ nhớ tối đa mỗi agent được dùng; `memory_tree_sync_interval_secs: 1200` là chu kỳ đồng bộ wiki cây tri thức (20 phút). Chỉ tăng `max_concurrent_agents` khi máy đủ RAM.
-
-### Bảo mật — 6 lớp
-
-`security` + `large_transfer`: chống prompt-injection (canary token, spotlighting mật mã, lọc Unicode) · chống SQL/FTS5 injection (`rusqlite::params!`, `PRAGMA trusted_schema = OFF`, bộ lọc FTS5) · chặn path-traversal · xác thực HMAC-SHA256 bằng so sánh hằng số thời gian · kiểm duyệt lệnh shell · giới hạn tốc độ gọi theo cửa sổ trượt.
-
-### Hình ảnh demo
-
-<p align="center">
-  <img src="assets/ascii-banner.jpg" alt="Banner ASCII Hermes Omega.rs" width="100%">
-  <em>Banner ASCII (đơn sắc, do <code>ascii_art</code> vẽ)</em>
-</p>
-
-<p align="center">
-  <img src="assets/ascii-emblem.jpg" alt="Emblem ASCII Hermes Omega.rs" width="49%">
-  <img src="assets/icon.jpg" alt="Icon Hermes Omega.rs" width="49%">
-</p>
-<p align="center"><em>Emblem ASCII (trái) và icon ứng dụng (phải)</em></p>
+| **Giao diện terminal thật** | TUI đầy đủ: nhập nhiều dòng, lệnh slash, xuất tool trực tiếp. |
+| **Vòng học khép kín** | Tự tạo kỹ năng từ kinh nghiệm và cải thiện chúng trong lúc dùng. Tìm lại các phiên cũ và hiểu dần về bạn. |
+| **Ở đâu cũng gặp được** | Gateway HTTP/WebSocket kèm dashboard web — nói chuyện từ bất kỳ client nào. |
+| **Chạy ở đâu cũng được** | Một binary duy nhất. Có sẵn Docker và systemd service. |
+| **Nói tiếng Việt** | Avatar tiếng Việt thời gian thực, giao diện tiếng Việt, tìm kiếm toàn văn tiếng Việt. |
+| **Bảo mật mặc định** | Chống prompt/SQL injection, chặn path-traversal, xác thực hằng số thời gian, giới hạn tốc độ gọi. |
 
 ### Bắt đầu nhanh
 
 ```bash
-cargo test -- --nocapture
 cargo build --release
 ./target/release/hermes-omega doctor
 ```
@@ -156,10 +114,10 @@ curl -s http://localhost:8080/health
 ### Dòng lệnh
 
 ```bash
-hermes-omega tui                  # TUI đa chủ đề + avatar MUSE.AI
+hermes-omega tui                  # Giao diện terminal + avatar
 hermes-omega chat --agent researchbot
-hermes-omega daemon --bind 0.0.0.0:8080   # Gateway + dashboard + heartbeat
-hermes-omega security-audit       # Kiểm định 6 lớp bảo mật
+hermes-omega daemon --bind 0.0.0.0:8080   # Gateway + dashboard
+hermes-omega security-audit       # Kiểm định các lớp bảo mật
 hermes-omega fleet --benchmark-count 50
 hermes-omega teach deploy-rust-service
 hermes-omega skills
@@ -168,12 +126,27 @@ hermes-omega acp                  # Máy chủ ACP cho editor
 hermes-omega doctor
 ```
 
-Cấu hình: `config.yaml` — gồm gateway, nhà cung cấp LLM, và giới hạn hạm đội OpenHuman (xem giải thích ở trên). Dữ liệu lưu tại `~/.hermes/` (`SOUL.md`, `MEMORY.md`, `USER.md`, SQLite DB).
+### Hình ảnh demo
+
+<p align="center">
+  <img src="assets/ascii-banner.jpg" alt="Banner ASCII Hermes Omega.rs" width="100%">
+  <em>Banner ASCII, do engine ASCII tích hợp vẽ</em>
+</p>
+
+<p align="center">
+  <img src="assets/ascii-emblem.jpg" alt="Emblem ASCII Hermes Omega.rs" width="49%">
+  <img src="assets/icon.jpg" alt="Icon Hermes Omega.rs" width="49%">
+</p>
+<p align="center"><em>Emblem ASCII (trái) và icon ứng dụng (phải)</em></p>
+
+### Cấu hình
+
+`config.yaml` chứa gateway, nhà cung cấp LLM và cài đặt hạm đội. Hạm đội là tập hợp các agent chạy song song: `max_concurrent_agents: 512` là số agent tối đa chạy cùng lúc, `agent_memory_budget_kb: 256` là bộ nhớ tối đa mỗi agent được dùng. Chỉ tăng giới hạn khi máy đủ RAM. Dữ liệu lưu tại `~/.hermes/`.
 
 ### Phiên bản
 
-Xem [CHANGELOG.md](CHANGELOG.md). Hiện tại: **v1.0.1** (06/11/2026). Các bản trước: v1.0.0, v0.8.0-sec, v0.5.0.
+Xem [CHANGELOG.md](CHANGELOG.md). Hiện tại: **v1.0.1**.
 
 ### Đóng góp & giấy phép
 
-Mời gửi issue và pull request. Vui lòng chạy `cargo fmt`, `cargo clippy` và `cargo test` trước khi gửi. Giấy phép MIT — xem [LICENSE](LICENSE).
+Mời gửi issue và pull request — chạy `cargo fmt`, `cargo clippy` và `cargo test` trước. Giấy phép MIT, xem [LICENSE](LICENSE).
