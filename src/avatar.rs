@@ -123,7 +123,7 @@ impl MuseAvatarController {
             │   │     ╷     │   │\n\
             │   │{mouth}│   │\n\
             │   └───────────┘   │\n\
-             '─.  [MUSE.AI]  .─'\n\
+             '─.  [Ω OMEGA]  .─'\n\
                 '───────────'"
         );
 
