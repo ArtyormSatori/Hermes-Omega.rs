@@ -1,11 +1,11 @@
-FROM rust:1.82-slim-bookworm AS builder
+FROM rust:1.90-slim-bookworm AS builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config libssl-dev build-essential sqlite3 libsqlite3-dev ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/hermes-omega-rs
-COPY Cargo.toml ./
+COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 
 RUN cargo build --release
