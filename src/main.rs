@@ -1,7 +1,7 @@
 //! # Ω Hermes Omega.rs CLI, TUI & Daemon Entry Point (`src/main.rs` — v1.0.0 Final Release)
 //!
 //! Cung cấp 10 chế độ vận hành hoàn chỉnh:
-//! - `hermes-omega tui`: Giao diện Terminal UI đa chủ đề (`MultiThemeTui`) + MUSE.AI ASCII Avatar + Tiếng Việt chuẩn.
+//! - `hermes-omega tui`: Giao diện Terminal UI đa chủ đề (`MultiThemeTui`) + Omega ASCII Avatar + Tiếng Việt chuẩn.
 //! - `hermes-omega chat`: Giao diện REPL tương tác nhanh.
 //! - `hermes-omega daemon`: Máy chủ OpenClaw Gateway + Heartbeat 30p + Memory Tree 20p + >1GB Streaming API.
 //! - `hermes-omega security-audit`: Tự động kiểm thử 6 lớp bảo mật (Prompt Injection, SQL/FTS5 Injection, Path Jail, HMAC, Shell Guard, Rate Limiter).
@@ -56,7 +56,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Giao diện Terminal UI đa chủ đề (Multi-Theme TUI + MUSE.AI Avatar)
+    /// Giao diện Terminal UI đa chủ đề (Multi-Theme TUI + Omega Avatar)
     Tui {
         #[arg(short = 'a', long = "agent", default_value = "researchbot")]
         agent_name: String,
@@ -242,7 +242,7 @@ async fn main() -> Result<()> {
             println!("  [OK] HERMES_HOME:         {}", home.display());
             println!("  [OK] SQLite WAL + FTS5:   {} (trusted_schema=OFF, unicode61)", home.join("hermes_state.sqlite3").display());
             println!("  [OK] Security Shield:     6 Layers Active (Prompt Spotlight + Canary + SQLi Guard)");
-            println!("  [OK] MUSE.AI Avatar:      Realtime Vietnamese Viseme Lip-Sync Ready");
+            println!("  [OK] Omega Avatar:      Realtime Vietnamese Viseme Lip-Sync Ready");
             println!("  [OK] >1GB Stream Engine:  8MB BufWriter / Max 16GB per file");
             println!("  [OK] Memory Tree Wiki:\n{}", wiki_summary);
         }

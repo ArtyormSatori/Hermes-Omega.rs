@@ -6,7 +6,7 @@
 //! - **OpenHands** (`event_stream`): Immutable `Action` -> `Observation` EventBus, `ContextCondenser`, `spawn_subagent`.
 //! - **OpenHuman** (`human_harness`): Lock-free `DashMap` 500+ Agent Harness, 20m Karpathy Memory Tree Wiki, 4-Tier Risk Gate.
 //! - **Grokbot** (`grok_engine`): Named Role Inference, `TeachATaskRecorder`, Schedule/Webhook `GrokRoutine`, Multi-LLM Router.
-//! - **MUSE.AI Embodiment & Monochrome ASCII** (`avatar`, `ascii_art`, `tui`, `i18n`): Realtime Vietnamese Viseme Lip-Sync Avatar, Multi-Theme TUI/Dashboard, Standard Vietnamese Localization (`Locale::Vi`).
+//! - **Omega Avatar & Monochrome ASCII** (`avatar`, `ascii_art`, `tui`, `i18n`): Realtime Vietnamese Viseme Lip-Sync Avatar, Multi-Theme TUI/Dashboard, Standard Vietnamese Localization (`Locale::Vi`).
 //! - **6-Layer Defense-in-Depth Security** (`security`, `large_transfer`): Anti-Prompt Injection (Spotlighting + Canary Token + Unicode Stripper), Anti-SQL/FTS5 Injection (`rusqlite::params!` + `PRAGMA trusted_schema = OFF` + FTS5 Sanitizer), Path Traversal Jail, Constant-Time HMAC-SHA256, Shell Injection Auditor, Sliding-Window Rate Limiter, and >1GB–16GB Zero-Copy Streaming Upload/Range Download.
 
 pub mod acp;

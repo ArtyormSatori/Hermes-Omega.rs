@@ -26,8 +26,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 - CLI with 10 modes: `tui`, `chat`, `daemon`, `security-audit`, `fleet`, `teach`, `skills`, `search`, `acp`, `doctor`.
   CLI 10 chế độ: `tui`, `chat`, `daemon`, `security-audit`, `fleet`, `teach`, `skills`, `search`, `acp`, `doctor`.
-- MUSE.AI realtime Vietnamese avatar (`avatar`): viseme lip-sync, `Thinking` / `Executing` / `Speaking` states, wired into the agent loop and the gateway (`/v1/avatar/frame`).
-  Avatar MUSE.AI tiếng Việt thời gian thực: khẩu hình viseme, trạng thái `Thinking` / `Executing` / `Speaking`, nối vào vòng lặp agent và gateway (`/v1/avatar/frame`).
+- Omega realtime Vietnamese avatar (`avatar`): viseme lip-sync, `Thinking` / `Executing` / `Speaking` states, wired into the agent loop and the gateway (`/v1/avatar/frame`).
+  Avatar Omega tiếng Việt thời gian thực: khẩu hình viseme, trạng thái `Thinking` / `Executing` / `Speaking`, nối vào vòng lặp agent và gateway (`/v1/avatar/frame`).
 - Multi-theme TUI (`tui`) with ASCII emblem and Vietnamese localization (`i18n`, `Locale::Vi`).
   TUI đa chủ đề với emblem ASCII và bản địa hoá tiếng Việt.
 - >1 GB–16 GB streaming (`claw_gateway`, `large_transfer`): chunked upload (`/v1/files/chunk`), `Range` download (HTTP 206), `DefaultBodyLimit::disable()`.

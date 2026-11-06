@@ -1,16 +1,16 @@
-//! # MUSE.AI Realtime Embodied Avatar Engine (`src/avatar.rs`)
+//! # Omega Realtime Avatar Engine (`src/avatar.rs`)
 //!
-//! Mô phỏng cơ chế **Realtime Avatar** của **MUSE.AI**:
+//! Cơ chế **Realtime Avatar** của **Hermes Omega.rs**:
 //! - 5 trạng thái nhận thức thời gian thực: `Idle` (Đang chờ), `Listening` (Đang lắng nghe),
 //!   `Thinking` (Đang suy luận ReAct), `Speaking` (Đang phát âm đồng bộ khẩu hình), `Executing` (Đang chạy Sandbox).
 //! - Tự động phân tích âm vị Tiếng Việt sang khẩu hình (Viseme: `Closed`, `HalfOpen`, `WideOpen`, `Rounded`).
-//! - Hỗ trợ kết xuất kép: **Khung chân dung ASCII trực tiếp trên TUI** và **Sự kiện WebSocket 60fps** trên Dashboard.
+//! - Hỗ trợ kết xuất kép: **Dấu thương hiệu Omega ASCII trên TUI** và **Sự kiện WebSocket 60fps** trên Dashboard.
 
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum MuseAvatarState {
+pub enum OmegaAvatarState {
     Idle,
     Listening,
     Thinking,
@@ -28,8 +28,8 @@ pub enum MouthViseme {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MuseAvatarFrame {
-    pub state: MuseAvatarState,
+pub struct OmegaAvatarFrame {
+    pub state: OmegaAvatarState,
     pub viseme: MouthViseme,
     pub blinking: bool,
     pub voice_energy_db: f32,
@@ -37,26 +37,26 @@ pub struct MuseAvatarFrame {
     pub ascii_portrait: String,
 }
 
-pub struct MuseAvatarController {
-    pub state: MuseAvatarState,
+pub struct OmegaAvatarController {
+    pub state: OmegaAvatarState,
     pub tick_counter: u64,
 }
 
-impl Default for MuseAvatarController {
+impl Default for OmegaAvatarController {
     fn default() -> Self {
         Self {
-            state: MuseAvatarState::Idle,
+            state: OmegaAvatarState::Idle,
             tick_counter: 0,
         }
     }
 }
 
-impl MuseAvatarController {
+impl OmegaAvatarController {
     pub fn new() -> Self {
         Self::default()
     }
 
-    pub fn set_state(&mut self, state: MuseAvatarState) {
+    pub fn set_state(&mut self, state: OmegaAvatarState) {
         self.state = state;
     }
 
@@ -72,13 +72,13 @@ impl MuseAvatarController {
     }
 
     /// Sinh khung hình Avatar kế tiếp (cho cả TUI ASCII và WebSocket Dashboard)
-    pub fn next_frame(&mut self, speaking_char: Option<char>) -> MuseAvatarFrame {
+    pub fn next_frame(&mut self, speaking_char: Option<char>) -> OmegaAvatarFrame {
         self.tick_counter = self.tick_counter.wrapping_add(1);
         let blinking = self.tick_counter % 19 == 0;
 
         let viseme = match (self.state, speaking_char) {
-            (MuseAvatarState::Speaking, Some(c)) => Self::phoneme_to_viseme(c),
-            (MuseAvatarState::Speaking, None) => {
+            (OmegaAvatarState::Speaking, Some(c)) => Self::phoneme_to_viseme(c),
+            (OmegaAvatarState::Speaking, None) => {
                 if self.tick_counter % 2 == 0 {
                     MouthViseme::HalfOpen
                 } else {
@@ -88,46 +88,25 @@ impl MuseAvatarController {
             _ => MouthViseme::Closed,
         };
 
-        let eyes = if blinking {
-            "  ─     ─  "
-        } else {
-            match self.state {
-                MuseAvatarState::Idle => "  ◉     ◉  ",
-                MuseAvatarState::Listening => "  ◎     ◎  ",
-                MuseAvatarState::Thinking => "  ◔     ◔  ",
-                MuseAvatarState::Speaking => "  ◉     ◉  ",
-                MuseAvatarState::Executing => "  ■     ■  ",
-            }
-        };
-
-        let mouth = match viseme {
-            MouthViseme::Closed => "    ───    ",
-            MouthViseme::HalfOpen => "    ═╦═    ",
-            MouthViseme::WideOpen => "   ╔═══╗   ",
-            MouthViseme::Rounded => "    (○)    ",
-        };
-
         let (status_label_vi, energy) = match self.state {
-            MuseAvatarState::Idle => ("Đang chờ lệnh (Idle)", 0.05),
-            MuseAvatarState::Listening => ("Đang lắng nghe âm thanh (Listening)", 0.45),
-            MuseAvatarState::Thinking => ("Đang suy luận ReAct (Thinking)", 0.25),
-            MuseAvatarState::Speaking => ("Đang phản hồi giọng nói (Speaking)", 0.85),
-            MuseAvatarState::Executing => ("Đang thực thi Sandbox (Executing)", 0.60),
+            OmegaAvatarState::Idle => ("Đang chờ lệnh (Idle)", 0.05),
+            OmegaAvatarState::Listening => ("Đang lắng nghe âm thanh (Listening)", 0.45),
+            OmegaAvatarState::Thinking => ("Đang suy luận ReAct (Thinking)", 0.25),
+            OmegaAvatarState::Speaking => ("Đang phản hồi giọng nói (Speaking)", 0.85),
+            OmegaAvatarState::Executing => ("Đang thực thi Sandbox (Executing)", 0.60),
         };
 
-        let ascii_portrait = format!(
-            "   .───────────.\n\
+        // Không vẽ khuôn mặt nữa — chỉ giữ dấu thương hiệu Omega.
+        let ascii_portrait = "   .───────────.\n\
              .─'  .:ΩΩΩΩ:.   '─.\n\
-            │   ┌───────────┐   │\n\
-            │   │{eyes}│   │\n\
-            │   │     ╷     │   │\n\
-            │   │{mouth}│   │\n\
-            │   └───────────┘   │\n\
-             '─.  [Ω OMEGA]  .─'\n\
+            │                   │\n\
+            │      Ω OMEGA      │\n\
+            │                   │\n\
+             '─.             .─'\n\
                 '───────────'"
-        );
+            .to_string();
 
-        MuseAvatarFrame {
+        OmegaAvatarFrame {
             state: self.state,
             viseme,
             blinking,

@@ -4,7 +4,7 @@
 //! - Xác thực DM Pairing hằng số thời gian (`constant_time_eq`) & giới hạn tần suất `RateLimiter`.
 //! - Gỡ bỏ giới hạn 2MB của Axum (`DefaultBodyLimit::disable()`) phục vụ tải lên/tải xuống luồng **>1GB – 16GB**
 //!   (`/v1/files/chunk` & `/v1/files/download/:file_name` hỗ trợ `Range: bytes=start-end` HTTP 206).
-//! - Endpoint `/v1/avatar/frame` phát trực tiếp trạng thái khẩu hình Tiếng Việt của **MUSE.AI Avatar**.
+//! - Endpoint `/v1/avatar/frame` phát trực tiếp trạng thái khẩu hình Tiếng Việt của **Omega Avatar**.
 //! - Tiến trình nền **Proactive Heartbeat** (đọc `SOUL.md` đầu tiên mỗi 30 phút) & **Memory Tree 20m Sync**.
 
 use crate::agent::HermesUnifiedAgent;

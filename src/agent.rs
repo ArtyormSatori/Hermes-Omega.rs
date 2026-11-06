@@ -3,10 +3,10 @@
 //! Hợp nhất toàn bộ 16 phân hệ của **Ω Hermes Omega.rs**:
 //! - Quét chống Prompt Injection (`PromptInjectionGuard::scan_and_spotlight`) và kiểm tra rò rỉ Canary Token (`verify_no_canary_leak`) trên mọi lượt hội thoại.
 //! - Lưu trữ phiên vào SQLite WAL + FTS5 tiếng Việt an toàn qua `SqlSecurityGuard`.
-//! - Đồng bộ trạng thái nhận thức & khẩu hình tiếng Việt thời gian thực lên `MuseAvatarController`.
+//! - Đồng bộ trạng thái nhận thức & khẩu hình tiếng Việt thời gian thực lên `OmegaAvatarController`.
 //! - Hỗ trợ truyền tải tệp >1GB qua `LargeFileEngine`.
 
-use crate::avatar::{MuseAvatarController, MuseAvatarFrame, MuseAvatarState};
+use crate::avatar::{OmegaAvatarController, OmegaAvatarFrame, OmegaAvatarState};
 use crate::config::HermesConfig;
 use crate::error::Result;
 use crate::event_stream::{AgentAction, ContextCondenser, EventPayload, EventStream};
@@ -28,7 +28,7 @@ pub struct TurnExecutionResult {
     pub inferred_role: String,
     pub reply: String,
     pub condensed_notice: Option<String>,
-    pub avatar_frame: MuseAvatarFrame,
+    pub avatar_frame: OmegaAvatarFrame,
 }
 
 pub struct HermesUnifiedAgent {
@@ -44,7 +44,7 @@ pub struct HermesUnifiedAgent {
     pub tool_registry: ToolRegistry,
     pub llm_router: LlmRouter,
     pub transfer_engine: LargeFileEngine,
-    pub avatar: Mutex<MuseAvatarController>,
+    pub avatar: Mutex<OmegaAvatarController>,
 }
 
 impl HermesUnifiedAgent {
@@ -66,7 +66,7 @@ impl HermesUnifiedAgent {
         let tool_registry = ToolRegistry::new();
         let llm_router = LlmRouter::new(config.clone());
         let transfer_engine = LargeFileEngine::new(&home)?;
-        let avatar = Mutex::new(MuseAvatarController::new());
+        let avatar = Mutex::new(OmegaAvatarController::new());
 
         Ok(Self {
             config,
@@ -97,10 +97,10 @@ impl HermesUnifiedAgent {
             .injection_guard
             .scan_and_spotlight(user_input)?;
 
-        // 2. Chuyển trạng thái MUSE.AI Avatar sang Thinking
+        // 2. Chuyển trạng thái Omega Avatar sang Thinking
         {
             let mut av = self.avatar.lock();
-            av.set_state(MuseAvatarState::Thinking);
+            av.set_state(OmegaAvatarState::Thinking);
         }
 
         // 3. Suy luận vai trò Grokbot & đánh thức Agent trong OpenHuman Harness
@@ -132,7 +132,7 @@ impl HermesUnifiedAgent {
             audit_shell_command(trimmed_cmd)?;
             {
                 let mut av = self.avatar.lock();
-                av.set_state(MuseAvatarState::Executing);
+                av.set_state(OmegaAvatarState::Executing);
             }
             let action = AgentAction::RunTerminalCommand {
                 command: trimmed_cmd.to_string(),
@@ -171,7 +171,7 @@ impl HermesUnifiedAgent {
             .injection_guard
             .verify_no_canary_leak(&reply)?;
 
-        // 9. Lưu phản hồi & cập nhật khẩu hình MUSE.AI Avatar sang Speaking
+        // 9. Lưu phản hồi & cập nhật khẩu hình Omega Avatar sang Speaking
         self.state_db
             .append_message(&slot.active_session_id, "assistant", &reply)?;
         self.event_stream
@@ -182,7 +182,7 @@ impl HermesUnifiedAgent {
 
         let avatar_frame = {
             let mut av = self.avatar.lock();
-            av.set_state(MuseAvatarState::Speaking);
+            av.set_state(OmegaAvatarState::Speaking);
             av.next_frame(reply.chars().next())
         };
 
