@@ -16,7 +16,7 @@ pub const HERMES_OMEGA_ASCII_EMBLEM: &str = r#"
                     ::  '-##\        /##-'  ::
                     |Ω\____\#|      |#/____/Ω|
                     |Ω#######|      |#######Ω|
-           [ Ω  H E R M E S   O M E G A . R S  —  v1.0.0 ]
+           [ Ω  H E R M E S   O M E G A . R S ]
 "#;
 
 /// Bảng ký tự độ sáng chuẩn từ tối đến sáng (10 mức)

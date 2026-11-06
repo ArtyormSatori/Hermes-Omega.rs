@@ -38,7 +38,7 @@ use tracing::info;
 #[command(
     name = "hermes-omega",
     version = env!("CARGO_PKG_VERSION"),
-    about = "Ω Hermes Omega.rs v1.0.0: Unified Autonomous AI Agent in Rust (Hermes + OpenClaw + OpenHands + OpenHuman + Grokbot + MUSE.AI)"
+    about = "Ω Hermes Omega.rs — The self-improving AI agent, rewritten in Rust."
 )]
 struct Cli {
     #[arg(short = 'p', long = "profile", default_value = "default")]

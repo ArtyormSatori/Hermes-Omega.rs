@@ -177,8 +177,8 @@ pub fn build_gateway_router(agent: Arc<HermesUnifiedAgent>) -> Router {
         .with_state(state)
 }
 
-async fn dashboard_index_handler() -> Html<&'static str> {
-    Html("<html><body style='background:#0c0e12;color:#e2e8f0;font-family:monospace;padding:2rem'><h2>Ω Hermes Omega.rs v1.0.0 Gateway Active</h2><p>Endpoints: /health, /v1/message, /v1/fleet, /v1/skills, /v1/avatar/frame, /v1/files/chunk (>1GB), /v1/files/download/:name (HTTP 206), /v1/ws</p></body></html>")
+async fn dashboard_index_handler() -> Html<String> {
+    Html(format!("<html><body style='background:#0c0e12;color:#e2e8f0;font-family:monospace;padding:2rem'><h2>Ω Hermes Omega.rs v{} Gateway Active</h2><p>Endpoints: /health, /v1/message, /v1/fleet, /v1/skills, /v1/avatar/frame, /v1/files/chunk (>1GB), /v1/files/download/:name (HTTP 206), /v1/ws</p></body></html>", env!("CARGO_PKG_VERSION")))
 }
 
 async fn health_handler(State(state): State<GatewayServerState>) -> Json<Value> {
