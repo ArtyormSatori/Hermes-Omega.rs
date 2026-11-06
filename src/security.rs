@@ -206,8 +206,30 @@ impl SqlSecurityGuard {
                 continue;
             }
 
+            // Từ khoá FTS5/SQL dính đầu token qua ký tự phân tách, vd "NEAR(a,b)"
+            // làm sạch thành "NEARab": gỡ phần từ khoá, giữ phần dữ liệu còn lại ("ab").
+            // Chỉ gỡ khi từ gốc có ký tự phân tách ngay sau từ khoá, tránh cắt nhầm
+            // từ thường như "android" -> "roid".
+            let mut token = cleaned;
+            for kw in [
+                "NEAR", "AND", "OR", "NOT", "DROP", "SELECT", "UNION", "DELETE",
+            ] {
+                if token.len() > kw.len() && token.to_uppercase().starts_with(kw) {
+                    if let Some(c) = word.chars().nth(kw.len()) {
+                        if !(c.is_alphanumeric() || c == '_' || c == '-') {
+                            token = token[kw.len()..].to_string();
+                        }
+                    }
+                    break;
+                }
+            }
+
+            if token.is_empty() {
+                continue;
+            }
+
             // Bọc từng từ khoá đã làm sạch trong cặp ngoặc kép chuẩn FTS5 literal
-            safe_tokens.push(format!("\"{}\"", cleaned));
+            safe_tokens.push(format!("\"{}\"", token));
         }
 
         if safe_tokens.is_empty() {

@@ -1,6 +1,6 @@
 [package]
 name = "hermes-omega-rs"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 authors = ["ArtyormSatori <kiethlt@gmail.com>"]
 description = "Hermes Omega.rs v1.0.0 — Unified autonomous AI agent runtime in Rust (2021 Edition). Integrates Hermes 5-layer FTS5 memory & closed skill loop, OpenHands event stream & condenser, OpenClaw gateway & >1GB streaming, OpenHuman 500+ agent harness, Grokbot role inference, MUSE.AI realtime Vietnamese avatar, and 6-layer Prompt/SQLi security shield."

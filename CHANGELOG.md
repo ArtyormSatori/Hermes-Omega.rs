@@ -7,6 +7,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ---
 
+## [1.0.1] — 2026-11-06 — Patch Release / Bản vá
+
+### Fixed / Sửa
+
+- `security::sanitize_fts5_query`: FTS5 operator keywords glued to arguments (e.g. `NEAR(a,b)`) no longer survive sanitization as `NEARab` — the keyword is now stripped and only the data (`ab`) is kept. Fixes the failing CI test `test_sql_and_fts5_injection_guard` (CI was red on every run since v0.5.0).
+  `security::sanitize_fts5_query`: từ khoá toán tử FTS5 dính với đối số (vd `NEAR(a,b)`) không còn lọt qua bộ lọc thành `NEARab` — từ khoá bị gỡ, chỉ giữ phần dữ liệu (`ab`). Sửa test CI `test_sql_and_fts5_injection_guard` vốn đỏ trên mọi lượt chạy từ v0.5.0.
+- `ascii_art`: emblem version corrected `v0.6.0` → `v1.0.0`.
+  `ascii_art`: sửa version trong emblem từ `v0.6.0` → `v1.0.0`.
+- README: Vietnamese proofread (fixed mistranslations: `căn lề prefix-cache`, `vòng học kín`, `khiên bảo mật`, `HMAC-SHA256 hằng số thời gian`); fleet limits explained in plain language; Screenshots section added (ASCII banner/emblem, app icon).
+  README: soát lại tiếng Việt (sửa các chỗ dịch sai); giải thích giới hạn hạm đội bằng ngôn ngữ thường; thêm mục hình ảnh demo (banner/emblem ASCII, icon ứng dụng).
+
+---
+
 ## [1.0.0] — 2026-11-03 — Final Release / Bản phát hành chính thức
 
 ### Added / Thêm mới
@@ -68,6 +81,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - 19 source modules, Docker + docker-compose, systemd service, CI workflow (check, clippy, test, release build).
   19 module nguồn, Docker + docker-compose, systemd service, CI (check, clippy, test, build release).
 
+[1.0.1]: https://github.com/ArtyormSatori/Hermes-Omega.rs/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ArtyormSatori/Hermes-Omega.rs/releases/tag/v1.0.0
 [0.8.0-sec]: https://github.com/ArtyormSatori/Hermes-Omega.rs/releases/tag/v0.8.0-sec
 [0.5.0]: https://github.com/ArtyormSatori/Hermes-Omega.rs/releases/tag/v0.5.0
